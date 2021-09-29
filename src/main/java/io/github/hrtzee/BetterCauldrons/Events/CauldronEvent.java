@@ -48,6 +48,8 @@ public class CauldronEvent {
         boolean flag_ = true;
         boolean bowl = false;
         boolean[] progress = {false,false,false,false,false,false,false,false,false};
+        int[] pro = {0,0,0,0,0,0,0,0,0};
+        int rate = 64;
         BlockPos pos1 = new BlockPos(pos.getX(),pos.getY()-1,pos.getZ());
         BlockPos pos2 = new BlockPos(pos.getX(),pos.getY()+1,pos.getZ());
         Recipes recipe = Recipes.EMPTY;
@@ -72,6 +74,7 @@ public class CauldronEvent {
                                     if (itemEntity.getItem().getItem().equals(recipes.getItem(i).getItem())) {
                                         progress[i] = true;
                                         itemEntity.addTag("dyn");
+                                        pro[i] = itemEntity.getItem().getCount();
                                         break;
                                     }
                                 }
@@ -91,6 +94,10 @@ public class CauldronEvent {
                     recipe = recipes;
                     product = recipe.getProduct();
                     flag = true;
+                    for (int i=0; i<9; i++){
+                        if (pro[i]==0)continue;
+                        rate = Math.min(rate,pro[i]);
+                    }
                     break;
                 } else {
                     flag_ = true;
@@ -102,6 +109,7 @@ public class CauldronEvent {
                         if (entity instanceof ItemEntity) {
                             ItemEntity itemEntity = (ItemEntity) entity;
                             if (itemEntity.getItem().sameItem(Items.BOWL.getDefaultInstance())) {
+                                itemEntity.addTag("dyn");
                                 bowl = true;
                                 break;
                             }
@@ -112,8 +120,8 @@ public class CauldronEvent {
                 player.swing(Hand.MAIN_HAND,true);
                 itemStack.setDamageValue(itemStack.getDamageValue()+3);
                 if (recipe.getConsume()>world.getBlockState(pos).getValue(BlockStateProperties.LEVEL_CAULDRON))return;
-                //for (Entity entity:entities) {if (entity instanceof ItemEntity) entity.addTag("dyn");}
                 final ItemStack finalProduct = product;
+                int finalRate = rate;
                 new Object() {
                     private int ticks = 0;
                     private float waitTicks;
@@ -150,6 +158,7 @@ public class CauldronEvent {
                         BlockPos[] blockPos = {blockPos1,blockPos2,blockPos3,blockPos4};
                         boolean flag = true;
                         ItemStack getItem = new ItemStack(finalProduct.getItem());
+                        getItem.setCount(finalRate);
                         getItem.getOrCreateTag().putBoolean("cauldrons",true);
                         for (BlockPos pos3:blockPos){
                             if (!(world.getBlockEntity(pos3) instanceof IInventory))continue;
@@ -158,10 +167,10 @@ public class CauldronEvent {
                             int i = 0 ;
                             for ( ; i<=inventory.getContainerSize(); i++){
                                 if (i == inventory.getContainerSize())break;
-                                if (inventory.getItem(i).isEmpty()||(inventory.getItem(i).sameItem(getItem)&&inventory.getItem(i).getCount()<64))break;
+                                if (inventory.getItem(i).isEmpty()||(inventory.getItem(i).sameItem(getItem)&&inventory.getItem(i).getCount()<(64- finalRate)))break;
                             }
                             if (i == inventory.getContainerSize())continue;
-                            getItem.setCount(inventory.getItem(i).getCount()+1);
+                            getItem.setCount(inventory.getItem(i).getCount()+ finalRate);
                             inventory.setItem(i,getItem);
                             flag = false;
                         }
@@ -171,7 +180,7 @@ public class CauldronEvent {
                         for (Entity entity:entities) {if (entity instanceof ItemEntity && entity.getTags().contains("dyn")) entity.remove();}
                         MinecraftForge.EVENT_BUS.unregister(this);
                     }
-                }.start((int) recipe.getCookTime());
+                }.start(recipe.getCookTime() *rate);
             }
 
         }
@@ -195,6 +204,11 @@ public class CauldronEvent {
         int nutrition = itemStack.getItem().getFoodProperties().getNutrition();
         float saturationModifier = itemStack.getItem().getFoodProperties().getSaturationModifier();
         player.getCapability(CapabilityRegistryHandler.CAU).ifPresent(cap->{
+            if (cap.isAddable())cap.addDuration();
+            TranslationTextComponent component = new TranslationTextComponent("message."+Utils.MOD_ID+".eat");
+            if (cap.isAddable())
+                player.sendMessage(component.append(Integer.toString(cap.getDuration())),player.getUUID());
+            cap.setAddable(false);
             int x = cap.getDuration();
             int x_ = x - 3;
             int x__ = x_ - 3;
@@ -214,21 +228,16 @@ public class CauldronEvent {
             float saturationLevel = Math.min(saturation/5 + player.getFoodData().getSaturationLevel(),20);
             player.getFoodData().eat(foodLevel,saturationLevel);
             if (time != 0){
-                if (x>=0)player.addEffect(new EffectInstance(Effects.LUCK, time, effectLevel));
-                if (x>=0)player.addEffect(new EffectInstance(Effects.NIGHT_VISION,time,effectLevel));
-                if (x_>=0)player.addEffect(new EffectInstance(Effects.MOVEMENT_SPEED,time_, effectLevel));
-                if (x_>=0)player.addEffect(new EffectInstance(Effects.JUMP,time_,effectLevel_));
-                if (x__>=0)player.addEffect(new EffectInstance(Effects.DAMAGE_BOOST,time__,effectLevel__));
-                if (x__>=0)player.addEffect(new EffectInstance(Effects.DIG_SPEED,time__,effectLevel__));
-                if (x___>=0)player.addEffect(new EffectInstance(Effects.ABSORPTION,time___,effectLevel___));
-                if (x___>=0)player.addEffect(new EffectInstance(Effects.DAMAGE_RESISTANCE,time___,effectLevel___));
+                if (x>0)player.addEffect(new EffectInstance(Effects.LUCK, time, effectLevel));
+                if (x>0)player.addEffect(new EffectInstance(Effects.NIGHT_VISION,time,effectLevel));
+                if (x_>0)player.addEffect(new EffectInstance(Effects.MOVEMENT_SPEED,time_, effectLevel));
+                if (x_>0)player.addEffect(new EffectInstance(Effects.JUMP,time_,effectLevel_));
+                if (x__>0)player.addEffect(new EffectInstance(Effects.DAMAGE_BOOST,time__,effectLevel__));
+                if (x__>0)player.addEffect(new EffectInstance(Effects.DIG_SPEED,time__,effectLevel__));
+                if (x___>0)player.addEffect(new EffectInstance(Effects.ABSORPTION,time___,effectLevel___));
+                if (x___>0)player.addEffect(new EffectInstance(Effects.DAMAGE_RESISTANCE,time___,effectLevel___));
 
             }
-            if (cap.isAddable())cap.addDuration();
-            TranslationTextComponent component = new TranslationTextComponent("message."+Utils.MOD_ID+".eat");
-            if (cap.isAddable())
-                player.sendMessage(component.append(Integer.toString(x)),player.getUUID());
-            cap.setAddable(false);
         });
     }
     @SubscribeEvent
