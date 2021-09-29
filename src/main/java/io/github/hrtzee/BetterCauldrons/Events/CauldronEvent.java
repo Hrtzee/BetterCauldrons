@@ -71,6 +71,7 @@ public class CauldronEvent {
                                     }
                                     if (itemEntity.getItem().getItem().equals(recipes.getItem(i).getItem())) {
                                         progress[i] = true;
+                                        itemEntity.addTag("dyn");
                                         break;
                                     }
                                 }
@@ -82,6 +83,7 @@ public class CauldronEvent {
                     if (!progress[i]) {
                         flag_ = false;
                         for (int j = 0; j < 9; j++) progress[j] = false;//重置progress
+                        for (Entity entity:entities)if (entity.getTags().contains("dyn"))entity.removeTag("dyn");
                         break;
                     }
                 }
@@ -110,7 +112,7 @@ public class CauldronEvent {
                 player.swing(Hand.MAIN_HAND,true);
                 itemStack.setDamageValue(itemStack.getDamageValue()+3);
                 if (recipe.getConsume()>world.getBlockState(pos).getValue(BlockStateProperties.LEVEL_CAULDRON))return;
-                for (Entity entity:entities) {if (entity instanceof ItemEntity) entity.addTag("dyn");}
+                //for (Entity entity:entities) {if (entity instanceof ItemEntity) entity.addTag("dyn");}
                 final ItemStack finalProduct = product;
                 new Object() {
                     private int ticks = 0;
@@ -194,17 +196,33 @@ public class CauldronEvent {
         float saturationModifier = itemStack.getItem().getFoodProperties().getSaturationModifier();
         player.getCapability(CapabilityRegistryHandler.CAU).ifPresent(cap->{
             int x = cap.getDuration();
+            int x_ = x - 3;
+            int x__ = x_ - 3;
+            int x___ = x__ - 3;
             float nutrition_ = (float) (nutrition*((-20/(x+10.76))+2));
             float saturation = (float) (saturationModifier*((-20/(x+10.76))+2));
             int tickPs = 20;
             int time = Math.max(0,Math.min(tickPs*30*x,600*tickPs));
+            int time_ = Math.max(0,Math.min(tickPs*30*x_,600*tickPs));
+            int time__ = Math.max(0,Math.min(tickPs*30*x__,600*tickPs));
+            int time___ = Math.max(0,Math.min(tickPs*30*x___,600*tickPs));
             int effectLevel = (int) Math.max(0,Math.floor((-72D/(x+7D))+10D));
+            int effectLevel_ = (int) Math.max(0,Math.floor((-72D/(x_+7D))+10D));
+            int effectLevel__ = (int) Math.max(0,Math.floor((-72D/(x__+7D))+10D));
+            int effectLevel___ = (int) Math.max(0,Math.floor((-72D/(x___+7D))+10D));
             int foodLevel = (int) Math.max(player.getFoodData().getFoodLevel(),Math.min(Math.floor(nutrition_ + player.getFoodData().getFoodLevel()),20));
             float saturationLevel = Math.min(saturation/5 + player.getFoodData().getSaturationLevel(),20);
             player.getFoodData().eat(foodLevel,saturationLevel);
             if (time != 0){
-                player.addEffect(new EffectInstance(Effects.LUCK, time, effectLevel));
-                player.addEffect(new EffectInstance(Effects.HEALTH_BOOST,time, effectLevel));
+                if (x>=0)player.addEffect(new EffectInstance(Effects.LUCK, time, effectLevel));
+                if (x>=0)player.addEffect(new EffectInstance(Effects.NIGHT_VISION,time,effectLevel));
+                if (x_>=0)player.addEffect(new EffectInstance(Effects.MOVEMENT_SPEED,time_, effectLevel));
+                if (x_>=0)player.addEffect(new EffectInstance(Effects.JUMP,time_,effectLevel_));
+                if (x__>=0)player.addEffect(new EffectInstance(Effects.DAMAGE_BOOST,time__,effectLevel__));
+                if (x__>=0)player.addEffect(new EffectInstance(Effects.DIG_SPEED,time__,effectLevel__));
+                if (x___>=0)player.addEffect(new EffectInstance(Effects.ABSORPTION,time___,effectLevel___));
+                if (x___>=0)player.addEffect(new EffectInstance(Effects.DAMAGE_RESISTANCE,time___,effectLevel___));
+
             }
             if (cap.isAddable())cap.addDuration();
             TranslationTextComponent component = new TranslationTextComponent("message."+Utils.MOD_ID+".eat");
