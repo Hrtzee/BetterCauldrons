@@ -7,4 +7,5 @@ public interface IRecipe {
     ItemStack getProduct();
     int getConsume();
     int getCookTime();
+    boolean isNeedBowl();
 }

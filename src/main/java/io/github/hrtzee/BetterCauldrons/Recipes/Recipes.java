@@ -4,16 +4,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
 public enum Recipes implements IRecipe{
-    EMPTY(ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,0,0),
-    MUSHROOM_STEW_RECIPE(Items.RED_MUSHROOM.getDefaultInstance(),Items.BROWN_MUSHROOM.getDefaultInstance(),ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,Items.MUSHROOM_STEW.getDefaultInstance(),3,100)
+    EMPTY(ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,0,0,false),
+    MUSHROOM_STEW_RECIPE(Items.RED_MUSHROOM.getDefaultInstance(),Items.BROWN_MUSHROOM.getDefaultInstance(),ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,Items.MUSHROOM_STEW.getDefaultInstance(),3,100,true)
+
+
+
     ;
 
     private final ItemStack[] itemStacks = new ItemStack[9];
     private final ItemStack product;
     private final int consume;
     private final int cookTime;
+    private final boolean needBowl;
 
-    Recipes(ItemStack itemStack0, ItemStack itemStack1, ItemStack itemStack2, ItemStack itemStack3, ItemStack itemStack4, ItemStack itemStack5, ItemStack itemStack6, ItemStack itemStack7, ItemStack itemStack8, ItemStack product, int consume, int cookTime) {
+    Recipes(ItemStack itemStack0, ItemStack itemStack1, ItemStack itemStack2, ItemStack itemStack3, ItemStack itemStack4, ItemStack itemStack5, ItemStack itemStack6, ItemStack itemStack7, ItemStack itemStack8, ItemStack product, int consume, int cookTime, boolean needBowl) {
         this.itemStacks[0]=itemStack0;
         this.itemStacks[1]=itemStack1;
         this.itemStacks[2]=itemStack2;
@@ -26,6 +30,7 @@ public enum Recipes implements IRecipe{
         this.product = product;
         this.consume = consume;
         this.cookTime = cookTime;
+        this.needBowl = needBowl;
     }
 
     @Override
@@ -46,6 +51,11 @@ public enum Recipes implements IRecipe{
     @Override
     public ItemStack getItem(int index) {
         return this.itemStacks[index];
+    }
+
+    @Override
+    public boolean isNeedBowl(){
+        return this.needBowl;
     }
 
 
