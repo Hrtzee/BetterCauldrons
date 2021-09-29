@@ -26,7 +26,7 @@ public class CauldronCapability implements ICauldronCapability {
 
     @Override
     public void addDuration() {
-        setDuration(this.duration+1);
+        setDuration(Math.min(100000,this.duration+1));
     }
 
     @Override
@@ -41,7 +41,10 @@ public class CauldronCapability implements ICauldronCapability {
 
     @Override
     public void turnDay() {
-        if (this.day == 1)setAddable(true);
+        if (this.day == 1) {
+            if (this.addable)setDuration(Math.max(this.duration-3,0));
+            setAddable(true);
+        }
         setDay((byte) ((this.day==0)?1:0));
     }
 

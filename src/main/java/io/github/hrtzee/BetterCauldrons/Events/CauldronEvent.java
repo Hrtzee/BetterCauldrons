@@ -204,7 +204,7 @@ public class CauldronEvent {
             player.getFoodData().eat(foodLevel,saturationLevel);
             if (time != 0){
                 player.addEffect(new EffectInstance(Effects.LUCK, time, effectLevel));
-                player.addEffect(new EffectInstance(Effects.HEALTH_BOOST, effectLevel));
+                player.addEffect(new EffectInstance(Effects.HEALTH_BOOST,time, effectLevel));
             }
             if (cap.isAddable())cap.addDuration();
             TranslationTextComponent component = new TranslationTextComponent("message."+Utils.MOD_ID+".eat");
