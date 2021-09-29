@@ -4,15 +4,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
 public enum Recipes implements IRecipe{
-    EMPTY(ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,0),
-    MUSHROOM_STEW_RECIPE(Items.RED_MUSHROOM.getDefaultInstance(),Items.BROWN_MUSHROOM.getDefaultInstance(),ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,Items.MUSHROOM_STEW.getDefaultInstance(),3)
+    EMPTY(ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,0,0),
+    MUSHROOM_STEW_RECIPE(Items.RED_MUSHROOM.getDefaultInstance(),Items.BROWN_MUSHROOM.getDefaultInstance(),ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,Items.MUSHROOM_STEW.getDefaultInstance(),3,100)
     ;
 
     private final ItemStack[] itemStacks = new ItemStack[9];
     private final ItemStack product;
     private final int consume;
+    private final int cookTime;
 
-    Recipes(ItemStack itemStack0, ItemStack itemStack1, ItemStack itemStack2, ItemStack itemStack3, ItemStack itemStack4, ItemStack itemStack5, ItemStack itemStack6, ItemStack itemStack7, ItemStack itemStack8, ItemStack product, int consume) {
+    Recipes(ItemStack itemStack0, ItemStack itemStack1, ItemStack itemStack2, ItemStack itemStack3, ItemStack itemStack4, ItemStack itemStack5, ItemStack itemStack6, ItemStack itemStack7, ItemStack itemStack8, ItemStack product, int consume, int cookTime) {
         this.itemStacks[0]=itemStack0;
         this.itemStacks[1]=itemStack1;
         this.itemStacks[2]=itemStack2;
@@ -24,11 +25,17 @@ public enum Recipes implements IRecipe{
         this.itemStacks[8]=itemStack8;
         this.product = product;
         this.consume = consume;
+        this.cookTime = cookTime;
     }
 
     @Override
     public int getConsume() {
         return this.consume;
+    }
+
+    @Override
+    public int getCookTime() {
+        return this.cookTime;
     }
 
     @Override

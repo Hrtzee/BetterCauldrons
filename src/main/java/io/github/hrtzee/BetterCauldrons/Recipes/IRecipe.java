@@ -6,4 +6,5 @@ public interface IRecipe {
     ItemStack getItem(int index);
     ItemStack getProduct();
     int getConsume();
+    int getCookTime();
 }
