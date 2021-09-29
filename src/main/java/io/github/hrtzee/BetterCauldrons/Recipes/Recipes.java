@@ -5,7 +5,18 @@ import net.minecraft.item.Items;
 
 public enum Recipes implements IRecipe{
     EMPTY(ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,0,0,false),
-    MUSHROOM_STEW_RECIPE(Items.RED_MUSHROOM.getDefaultInstance(),Items.BROWN_MUSHROOM.getDefaultInstance(),ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,Items.MUSHROOM_STEW.getDefaultInstance(),3,100,true)
+    MUSHROOM_STEW(Items.RED_MUSHROOM.getDefaultInstance(),Items.BROWN_MUSHROOM.getDefaultInstance(),ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,Items.MUSHROOM_STEW.getDefaultInstance(),3,600,true),
+    RABBIT_STEW_R(Items.RED_MUSHROOM.getDefaultInstance(),Items.CARROT.getDefaultInstance(),Items.COOKED_RABBIT.getDefaultInstance(),Items.BAKED_POTATO.getDefaultInstance(),ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,Items.RABBIT_STEW.getDefaultInstance(),3,600,true),
+    RABBIT_STEW_B(Items.BROWN_MUSHROOM.getDefaultInstance(),Items.CARROT.getDefaultInstance(),Items.COOKED_RABBIT.getDefaultInstance(),Items.BAKED_POTATO.getDefaultInstance(),ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,Items.RABBIT_STEW.getDefaultInstance(),3,600,true),
+    STEAK(Items.BEEF.getDefaultInstance(),ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,Items.COOKED_BEEF.getDefaultInstance(),0,300,false),
+    BAKED_POTATO(Items.POTATO.getDefaultInstance(),ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,Items.BAKED_POTATO.getDefaultInstance(), 0,200,false),
+    BEETROOT_SOUP(Items.BEETROOT.getDefaultInstance(),Items.BEETROOT.getDefaultInstance(),Items.BEETROOT.getDefaultInstance(),Items.BEETROOT.getDefaultInstance(),Items.BEETROOT.getDefaultInstance(),Items.BEETROOT.getDefaultInstance(),ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,Items.BEETROOT_SOUP.getDefaultInstance(),3,600,true),
+    COOKED_MUTTON(Items.MUTTON.getDefaultInstance(), ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,Items.COOKED_MUTTON.getDefaultInstance(), 0,300,false),
+    COOKED_PORKCHOP(Items.PORKCHOP.getDefaultInstance(),ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,Items.COOKED_PORKCHOP.getDefaultInstance(), 0,300,false),
+    COOKED_SALMON(Items.SALMON.getDefaultInstance(),ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,Items.COOKED_SALMON.getDefaultInstance(), 2,300,false),
+    COOKED_CHICKEN(Items.CHICKEN.getDefaultInstance(),ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,Items.COOKED_CHICKEN.getDefaultInstance(), 0,300,false),
+    COOKED_RABBIT(Items.RABBIT.getDefaultInstance(),ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,Items.COOKED_RABBIT.getDefaultInstance(), 0,300,false),
+    COOKED_COD(Items.COD.getDefaultInstance(),ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY,Items.COOKED_COD.getDefaultInstance(), 0,300,false),
 
 
 

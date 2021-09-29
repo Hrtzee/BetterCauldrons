@@ -74,11 +74,6 @@ public class CauldronEvent {
                                         break;
                                     }
                                 }
-                                if (recipes.isNeedBowl()){
-                                    if (itemEntity.getItem().sameItem(Items.BOWL.getDefaultInstance())){
-                                        bowl = true;
-                                    }
-                                }
                             }
                         }
                     }
@@ -90,7 +85,7 @@ public class CauldronEvent {
                         break;
                     }
                 }
-                if (flag_&&(!recipes.isNeedBowl()||bowl)) {
+                if (flag_) {
                     recipe = recipes;
                     product = recipe.getProduct();
                     flag = true;
@@ -100,6 +95,18 @@ public class CauldronEvent {
                 }
             }
             if (flag){//执行配方
+                if (recipe.isNeedBowl()){
+                    for (Entity entity:entities){
+                        if (entity instanceof ItemEntity) {
+                            ItemEntity itemEntity = (ItemEntity) entity;
+                            if (itemEntity.getItem().sameItem(Items.BOWL.getDefaultInstance())) {
+                                bowl = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (!(!recipe.isNeedBowl()||bowl))return;
                 player.swing(Hand.MAIN_HAND,true);
                 itemStack.setDamageValue(itemStack.getDamageValue()+3);
                 if (recipe.getConsume()>world.getBlockState(pos).getValue(BlockStateProperties.LEVEL_CAULDRON))return;
@@ -149,7 +156,7 @@ public class CauldronEvent {
                             int i = 0 ;
                             for ( ; i<=inventory.getContainerSize(); i++){
                                 if (i == inventory.getContainerSize())break;
-                                if (inventory.getItem(i).isEmpty()||(inventory.getItem(i).sameItem(Items.DIRT.getDefaultInstance())&&inventory.getItem(i).getCount()<64))break;
+                                if (inventory.getItem(i).isEmpty()||(inventory.getItem(i).sameItem(getItem)&&inventory.getItem(i).getCount()<64))break;
                             }
                             if (i == inventory.getContainerSize())continue;
                             getItem.setCount(inventory.getItem(i).getCount()+1);
@@ -175,7 +182,7 @@ public class CauldronEvent {
         }
     }
     @SubscribeEvent
-    public static void playerEatEvent(LivingEntityUseItemEvent event){
+    public static void playerEatEvent(LivingEntityUseItemEvent.Finish event){
         ItemStack itemStack = event.getItem();
         LivingEntity entity = event.getEntityLiving();
         if (!(entity instanceof PlayerEntity))return;
