@@ -3,7 +3,9 @@ package io.github.hrtzee.BetterCauldrons.Events;
 import io.github.hrtzee.BetterCauldrons.Capability.CapabilityRegistryHandler;
 import io.github.hrtzee.BetterCauldrons.Recipes.Recipes;
 import io.github.hrtzee.BetterCauldrons.Utils;
+import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.CampfireBlock;
 import net.minecraft.block.TrapDoorBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -55,7 +57,8 @@ public class CauldronEvent {
         Recipes recipe = Recipes.EMPTY;
         ItemStack product = new ItemStack(Items.STONE_SWORD);
         if (!(world.getBlockState(pos).is(Blocks.CAULDRON)))return;
-        if (!(world.getBlockState(pos1).is(Blocks.FIRE)))return;
+        if (!(world.getBlockState(pos1).getBlock() instanceof AbstractFireBlock||world.getBlockState(pos1).getBlock() instanceof CampfireBlock))return;
+        if (world.getBlockState(pos1).getBlock() instanceof CampfireBlock)if (!world.getBlockState(pos1).getValue(BlockStateProperties.LIT))return;
         if (!(world.getBlockState(pos2).getBlock() instanceof TrapDoorBlock))return;//以上初始化&判断方块状态
         if (itemStack.getItem() instanceof ShovelItem && !world.getBlockState(pos2).getValue(BlockStateProperties.OPEN)){
             List<Entity> entities = world.getEntities(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ()), AxisAlignedBB.of(new MutableBoundingBox(pos.getX(),pos.getY(),pos.getZ(),pos.getX(),pos.getY(),pos.getZ())));
@@ -138,7 +141,7 @@ public class CauldronEvent {
                                 world.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 0, 0, 0);
                                 world.addParticle(ParticleTypes.EFFECT, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 5, 5, 5);
                             }
-                            if (!world.getBlockState(pos).is(Blocks.CAULDRON)||!(world.getBlockState(pos2).getBlock() instanceof TrapDoorBlock)||!world.getBlockState(pos1).is(Blocks.FIRE)||world.getBlockState(pos2).getValue(BlockStateProperties.OPEN)){
+                            if (!world.getBlockState(pos).is(Blocks.CAULDRON)||!(world.getBlockState(pos2).getBlock() instanceof TrapDoorBlock)||(!(world.getBlockState(pos1).getBlock() instanceof AbstractFireBlock)||(world.getBlockState(pos1).getBlock() instanceof CampfireBlock)?world.getBlockState(pos1).getValue(BlockStateProperties.LIT):false)||world.getBlockState(pos2).getValue(BlockStateProperties.OPEN)){
                                 MinecraftForge.EVENT_BUS.unregister(this);//如果中途破坏方块或掀开盖子，return
                                 for (Entity entity:entities) {if (entity instanceof ItemEntity && entity.getTags().contains("dyn")) entity.removeTag("dyn");}
                                 return;
