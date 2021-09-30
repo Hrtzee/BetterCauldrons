@@ -141,7 +141,7 @@ public class CauldronEvent {
                                 world.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 0, 0, 0);
                                 world.addParticle(ParticleTypes.EFFECT, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 5, 5, 5);
                             }
-                            if (!world.getBlockState(pos).is(Blocks.CAULDRON)||!(world.getBlockState(pos2).getBlock() instanceof TrapDoorBlock)||(!(world.getBlockState(pos1).getBlock() instanceof AbstractFireBlock)||(world.getBlockState(pos1).getBlock() instanceof CampfireBlock)?world.getBlockState(pos1).getValue(BlockStateProperties.LIT):false)||world.getBlockState(pos2).getValue(BlockStateProperties.OPEN)){
+                            if (!world.getBlockState(pos).is(Blocks.CAULDRON)||!(world.getBlockState(pos2).getBlock() instanceof TrapDoorBlock)||(world.getBlockState(pos1).getBlock() instanceof AbstractFireBlock || (!(world.getBlockState(pos1).getBlock() instanceof CampfireBlock)) || !world.getBlockState(pos1).getValue(BlockStateProperties.LIT))||world.getBlockState(pos2).getValue(BlockStateProperties.OPEN)){
                                 MinecraftForge.EVENT_BUS.unregister(this);//如果中途破坏方块或掀开盖子，return
                                 for (Entity entity:entities) {if (entity instanceof ItemEntity && entity.getTags().contains("dyn")) entity.removeTag("dyn");}
                                 return;
