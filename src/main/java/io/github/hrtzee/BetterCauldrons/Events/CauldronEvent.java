@@ -1,6 +1,7 @@
 package io.github.hrtzee.BetterCauldrons.Events;
 
 import io.github.hrtzee.BetterCauldrons.Capability.CapabilityRegistryHandler;
+import io.github.hrtzee.BetterCauldrons.Config;
 import io.github.hrtzee.BetterCauldrons.Recipes.Recipes;
 import io.github.hrtzee.BetterCauldrons.Recipes.Stuff;
 import io.github.hrtzee.BetterCauldrons.Utils;
@@ -147,7 +148,7 @@ public class CauldronEvent {
                                 world.addParticle(ParticleTypes.EFFECT, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 5, 5, 5);
                             }
                             if (!world.getBlockState(pos).is(Blocks.CAULDRON)||!(world.getBlockState(pos2).getBlock() instanceof TrapDoorBlock)||(world.getBlockState(pos1).getBlock() instanceof AbstractFireBlock || (!(world.getBlockState(pos1).getBlock() instanceof CampfireBlock)) || !world.getBlockState(pos1).getValue(BlockStateProperties.LIT))||world.getBlockState(pos2).getValue(BlockStateProperties.OPEN)){
-                                MinecraftForge.EVENT_BUS.unregister(this);//如果中途破坏方块或掀开盖子，return
+                                MinecraftForge.EVENT_BUS.unregister(this);
                                 for (Entity entity:entities) {if (entity instanceof ItemEntity && entity.getTags().contains("dyn")) entity.removeTag("dyn");}
                                 return;
                             }
@@ -191,30 +192,25 @@ public class CauldronEvent {
                     }
                 }.start(recipe.getCookTime() *rate);
             }else{
-                ItemStack[] itemStacks = new ItemStack[entities.size()];
-                int k = entities.size();
+                ArrayList<ItemStack> itemStacks = new ArrayList<>();
                 for (Entity entity:entities){
                     if (!(entity instanceof ItemEntity))continue;
-                    for (int i =0; i<k; i++){
-                        if (!(entities.get(i) instanceof ItemEntity)){
-                            i--;
-                            k--;
-                            continue;
-                        }
-                        ItemEntity item = (ItemEntity) entities.get(i);
+                    ItemEntity itemEntity = (ItemEntity) entity;
+                    itemStacks.add(itemEntity.getItem());
+                    entity.addTag("dyn");
+                }
+                for (Entity entity:entities){
+                    if (entity instanceof ItemEntity) {
                         ItemEntity itemEntity = (ItemEntity) entity;
-                        if (item.equals(itemEntity)){
-                            itemStacks[i] = itemEntity.getItem();
+                        if (itemEntity.getItem().sameItem(Items.BOWL.getDefaultInstance())) {
+                            itemEntity.addTag("dyn");
+                            bowl = true;
                             break;
                         }
                     }
                 }
-                if (k < entities.size()){
-                    for (; k<entities.size(); k++){
-                        itemStacks[k] = ItemStack.EMPTY;
-                    }
-                }
-                if (itemStacks[0].isEmpty())return;
+                if (!bowl)return;
+                if (itemStacks.isEmpty())return;
                 ArrayList<String> tags = new ArrayList<>();
                 for (ItemStack itemStack1:itemStacks){
                     for (Stuff stuff:Stuff.values()){
@@ -225,7 +221,7 @@ public class CauldronEvent {
                         }
                     }
                 }
-                int finalRate = tags.size();
+                int finalRate = tags.size() + 1;
                 new Object() {
                     private int ticks = 0;
                     private float waitTicks;
@@ -250,7 +246,7 @@ public class CauldronEvent {
                                 return;
                             }
                             if (!world.getBlockState(pos).is(Blocks.CAULDRON)||!(world.getBlockState(pos2).getBlock() instanceof TrapDoorBlock)||(world.getBlockState(pos1).getBlock() instanceof AbstractFireBlock || (!(world.getBlockState(pos1).getBlock() instanceof CampfireBlock)) || !world.getBlockState(pos1).getValue(BlockStateProperties.LIT))||world.getBlockState(pos2).getValue(BlockStateProperties.OPEN)){
-                                MinecraftForge.EVENT_BUS.unregister(this);//如果中途破坏方块或掀开盖子，return
+                                MinecraftForge.EVENT_BUS.unregister(this);
                                 for (Entity entity:entities) {if (entity instanceof ItemEntity && entity.getTags().contains("dyn")) entity.removeTag("dyn");}
                                 return;
                             }
@@ -294,7 +290,7 @@ public class CauldronEvent {
                         for (Entity entity:entities) {if (entity instanceof ItemEntity && entity.getTags().contains("dyn")) entity.remove();}
                         MinecraftForge.EVENT_BUS.unregister(this);
                     }
-                }.start(100 * finalRate);
+                }.start((int) (100 * finalRate * Config.COOK_RATE.get()));
             }
         }
     }
