@@ -1,5 +1,6 @@
 package io.github.hrtzee.BetterCauldrons.Recipes;
 
+import io.github.hrtzee.BetterCauldrons.Config;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
@@ -51,7 +52,7 @@ public enum Recipes implements IRecipe{
 
     @Override
     public int getCookTime() {
-        return this.cookTime;
+        return Math.max((int) Math.floor(this.cookTime * Config.COOK_RATE.get()),1);
     }
 
     @Override
