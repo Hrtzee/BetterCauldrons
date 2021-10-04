@@ -214,6 +214,7 @@ public class CauldronEvent {
                         itemStacks[k] = ItemStack.EMPTY;
                     }
                 }
+                if (itemStacks[0].isEmpty())return;
                 ArrayList<String> tags = new ArrayList<>();
                 for (ItemStack itemStack1:itemStacks){
                     for (Stuff stuff:Stuff.values()){
