@@ -126,11 +126,11 @@ public class CauldronEvent {
                     }
                 }
                 if (!(!recipe.isNeedBowl()||bowl))return;
-                player.swing(Hand.MAIN_HAND,true);
-                itemStack.setDamageValue(itemStack.getDamageValue()+3);
                 if (recipe.getConsume()>world.getBlockState(pos).getValue(BlockStateProperties.LEVEL_CAULDRON))return;
+                itemStack.setDamageValue(itemStack.getDamageValue()+3);
                 final ItemStack finalProduct = product;
                 int finalRate = rate;
+                player.swing(Hand.MAIN_HAND,true);
                 new Object() {
                     private int ticks = 0;
                     private float waitTicks;
@@ -147,7 +147,9 @@ public class CauldronEvent {
                                 world.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 0, 0, 0);
                                 world.addParticle(ParticleTypes.EFFECT, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 5, 5, 5);
                             }
-                            if (!world.getBlockState(pos).is(Blocks.CAULDRON)||!(world.getBlockState(pos2).getBlock() instanceof TrapDoorBlock)||(world.getBlockState(pos1).getBlock() instanceof AbstractFireBlock || (!(world.getBlockState(pos1).getBlock() instanceof CampfireBlock)) || !world.getBlockState(pos1).getValue(BlockStateProperties.LIT))||world.getBlockState(pos2).getValue(BlockStateProperties.OPEN)){
+                            if (!world.getBlockState(pos).is(Blocks.CAULDRON)||!(world.getBlockState(pos2).getBlock() instanceof TrapDoorBlock)||
+                                    ((!(world.getBlockState(pos1).getBlock() instanceof AbstractFireBlock) && !(world.getBlockState(pos1).getBlock() instanceof CampfireBlock)) || (world.getBlockState(pos1).getBlock() instanceof CampfireBlock &&!world.getBlockState(pos1).getValue(BlockStateProperties.LIT)))
+                                    ||world.getBlockState(pos2).getValue(BlockStateProperties.OPEN)){
                                 MinecraftForge.EVENT_BUS.unregister(this);
                                 for (Entity entity:entities) {if (entity instanceof ItemEntity && entity.getTags().contains("dyn")) entity.removeTag("dyn");}
                                 return;
@@ -258,7 +260,9 @@ public class CauldronEvent {
                                 MinecraftForge.EVENT_BUS.unregister(this);
                                 return;
                             }
-                            if (!world.getBlockState(pos).is(Blocks.CAULDRON)||!(world.getBlockState(pos2).getBlock() instanceof TrapDoorBlock)||(world.getBlockState(pos1).getBlock() instanceof AbstractFireBlock || (!(world.getBlockState(pos1).getBlock() instanceof CampfireBlock)) || !world.getBlockState(pos1).getValue(BlockStateProperties.LIT))||world.getBlockState(pos2).getValue(BlockStateProperties.OPEN)){
+                            if (!world.getBlockState(pos).is(Blocks.CAULDRON)||!(world.getBlockState(pos2).getBlock() instanceof TrapDoorBlock)||
+                                    ((!(world.getBlockState(pos1).getBlock() instanceof AbstractFireBlock) && !(world.getBlockState(pos1).getBlock() instanceof CampfireBlock)) || (world.getBlockState(pos1).getBlock() instanceof CampfireBlock &&!world.getBlockState(pos1).getValue(BlockStateProperties.LIT)))
+                                    ||world.getBlockState(pos2).getValue(BlockStateProperties.OPEN)){
                                 MinecraftForge.EVENT_BUS.unregister(this);
                                 for (Entity entity:entities) {if (entity instanceof ItemEntity && entity.getTags().contains("dyn")) entity.removeTag("dyn");}
                                 return;
@@ -453,7 +457,7 @@ public class CauldronEvent {
                     player.level.explode(player,player.xo,player.yo,player.zo,2.5F,Explosion.Mode.DESTROY);
                 }
                 if (itemStack.getOrCreateTag().getBoolean("nausea")){
-                    player.addEffect(new EffectInstance(Effects.CONFUSION,15));
+                    player.addEffect(new EffectInstance(Effects.CONFUSION,15*20));
                 }
             }
         });
