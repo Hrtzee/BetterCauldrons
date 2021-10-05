@@ -217,7 +217,13 @@ public class CauldronEvent {
                 for (ItemStack itemStack1:itemStacks){
                     for (Stuff stuff:Stuff.values()){
                         if (itemStack1.sameItem(Items.BOWL.getDefaultInstance()))break;
-                        if (stuff.getItemStacks().contains(new ItemStack(itemStack1.getItem()))){
+                        boolean f = false;
+                        for (int i =0; i<stuff.getItemStacks().size(); i++){
+                            if (stuff.getItemStacks().get(i).sameItem(new ItemStack(itemStack1.getItem()))){
+                                f = true;
+                            }
+                        }
+                        if (f){
                             if (!tags.contains(stuff.getTag())){
                                 tags.add(stuff.getTag());
                             }
@@ -228,7 +234,6 @@ public class CauldronEvent {
                         }
                     }
                 }
-                player.sendMessage(new StringTextComponent(tags.toString()),player.getUUID());
                 int finalRate = tags.size() + 1;
                 player.swing(Hand.MAIN_HAND,true);
                 new Object() {
