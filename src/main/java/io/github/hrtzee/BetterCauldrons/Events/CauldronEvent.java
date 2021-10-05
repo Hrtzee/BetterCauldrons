@@ -30,6 +30,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -191,7 +192,8 @@ public class CauldronEvent {
                         MinecraftForge.EVENT_BUS.unregister(this);
                     }
                 }.start(recipe.getCookTime() *rate);
-            }else{
+            }else {
+                ArrayList<String> tags = new ArrayList<>();
                 ArrayList<ItemStack> itemStacks = new ArrayList<>();
                 for (Entity entity:entities){
                     if (!(entity instanceof ItemEntity))continue;
@@ -209,19 +211,26 @@ public class CauldronEvent {
                         }
                     }
                 }
+                if (world.getBlockState(pos).getValue(BlockStateProperties.LEVEL_CAULDRON)==0)return;
                 if (!bowl)return;
                 if (itemStacks.isEmpty())return;
-                ArrayList<String> tags = new ArrayList<>();
                 for (ItemStack itemStack1:itemStacks){
                     for (Stuff stuff:Stuff.values()){
-                        if (stuff.getItemStacks().contains(itemStack1)){
+                        if (itemStack1.sameItem(Items.BOWL.getDefaultInstance()))break;
+                        if (stuff.getItemStacks().contains(new ItemStack(itemStack1.getItem()))){
                             if (!tags.contains(stuff.getTag())){
                                 tags.add(stuff.getTag());
+                            }
+                        }else {
+                            if (!tags.contains("nausea")){
+                                tags.add("nausea");
                             }
                         }
                     }
                 }
+                player.sendMessage(new StringTextComponent(tags.toString()),player.getUUID());
                 int finalRate = tags.size() + 1;
+                player.swing(Hand.MAIN_HAND,true);
                 new Object() {
                     private int ticks = 0;
                     private float waitTicks;
@@ -270,6 +279,7 @@ public class CauldronEvent {
                         for (Stuff stuff:Stuff.values()){
                             getItem.getOrCreateTag().putBoolean(stuff.getTag(),tags.contains(stuff.getTag()));
                         }
+                        getItem.getOrCreateTag().putBoolean("nausea",tags.contains("nausea"));
                         for (BlockPos pos3:blockPos){
                             if (!(world.getBlockEntity(pos3) instanceof IInventory))continue;
                             IInventory inventory = (IInventory) world.getBlockEntity(pos3);
@@ -437,6 +447,9 @@ public class CauldronEvent {
                 }
                 if (itemStack.getOrCreateTag().getBoolean("explosion")){
                     player.level.explode(player,player.xo,player.yo,player.zo,2.5F,Explosion.Mode.DESTROY);
+                }
+                if (itemStack.getOrCreateTag().getBoolean("nausea")){
+                    player.addEffect(new EffectInstance(Effects.CONFUSION,15));
                 }
             }
         });
